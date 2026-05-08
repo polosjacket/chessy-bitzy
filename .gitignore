@@ -1,0 +1,91 @@
+# ─── Node.js ────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# ─── Build Output ────────────────────────────────────────────
+dist/
+dist-ssr/
+build/
+out/
+
+# ─── Vite ────────────────────────────────────────────────────
+.vite/
+vite.config.js.timestamp-*
+
+# ─── Environment Variables ───────────────────────────────────
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+
+# ─── IDE / Editors ───────────────────────────────────────────
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*.swo
+*.sublime-workspace
+
+# ─── OS Generated ────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ─── Logs ────────────────────────────────────────────────────
+logs/
+*.log
+*.log.*
+
+# ─── Testing ─────────────────────────────────────────────────
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+
+# ─── Cache ───────────────────────────────────────────────────
+.cache/
+.eslintcache
+.stylelintcache
+.parcel-cache/
+
+# ─── Package Manager Lock Files (keep only one) ──────────────
+# Uncomment one to keep it tracked:
+# yarn.lock
+# pnpm-lock.yaml
+# Keep package-lock.json tracked (default for npm)
+
+# ─── 3D Assets (large binary files) ─────────────────────────
+# public/models/*.glb     ← Uncomment if using Git LFS instead
+# public/textures/*.png   ← Uncomment if using Git LFS instead
+
+# ─── Temporary / Scratch ─────────────────────────────────────
+tmp/
+temp/
+scratch/
+*.tmp
+*.bak
+*.orig
+
+# ─── Security ────────────────────────────────────────────────
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.json

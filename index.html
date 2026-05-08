@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Chessy Bitzy — A Nintendo-inspired 3D chess game featuring Mario, Kirby, and friends." />
+    <title>Chessy Bitzy 🍄</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Sniglet:wght@400;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Main Menu Screen -->
+      <div id="screen-menu" class="screen active">
+        <div class="menu-bg">
+          <div class="star star-1"></div>
+          <div class="star star-2"></div>
+          <div class="star star-3"></div>
+          <div class="star star-4"></div>
+        </div>
+        <div class="menu-container">
+          <div class="game-logo">
+            <span class="logo-icon">♟</span>
+            <h1 class="logo-title">Chessy Bitzy</h1>
+            <p class="logo-subtitle">A Nintendo-Inspired 3D Chess Adventure</p>
+          </div>
+          <div class="menu-buttons">
+            <button id="btn-1p" class="menu-btn btn-1p">
+              <span class="btn-icon">🎮</span>
+              <span class="btn-label">1 Player</span>
+              <span class="btn-sub">vs Computer</span>
+            </button>
+            <button id="btn-2p" class="menu-btn btn-2p">
+              <span class="btn-icon">👥</span>
+              <span class="btn-label">2 Players</span>
+              <span class="btn-sub">Local Match</span>
+            </button>
+          </div>
+          <div class="menu-faction">
+            <h3 class="faction-title">Choose Your Faction</h3>
+            <div class="faction-cards">
+              <div id="faction-mario" class="faction-card selected" data-faction="mario">
+                <div class="faction-emoji">🍄</div>
+                <div class="faction-name">Team Mario</div>
+                <div class="faction-tag">White Pieces</div>
+              </div>
+              <div id="faction-kirby" class="faction-card" data-faction="kirby">
+                <div class="faction-emoji">🐧</div>
+                <div class="faction-name">Team Kirby</div>
+                <div class="faction-tag">Black Pieces</div>
+              </div>
+            </div>
+          </div>
+          <button id="btn-start" class="start-btn">Start Game ✨</button>
+        </div>
+      </div>
+
+      <!-- Game Screen -->
+      <div id="screen-game" class="screen">
+        <div id="game-hud">
+          <div class="hud-panel hud-left">
+            <div id="player-white" class="player-info">
+              <div class="player-avatar">🍄</div>
+              <div class="player-details">
+                <div class="player-name">Team Mario</div>
+                <div class="player-role">White</div>
+              </div>
+            </div>
+          </div>
+          <div class="hud-center">
+            <div id="turn-indicator" class="turn-indicator">White's Turn</div>
+            <div id="game-status" class="game-status"></div>
+            <div class="hud-controls">
+              <button id="btn-flip" class="hud-btn" title="Flip Board">🔄</button>
+              <button id="btn-undo" class="hud-btn" title="Undo">↩</button>
+              <button id="btn-menu" class="hud-btn" title="Menu">🏠</button>
+            </div>
+          </div>
+          <div class="hud-panel hud-right">
+            <div id="player-black" class="player-info">
+              <div class="player-avatar">🐧</div>
+              <div class="player-details">
+                <div class="player-name">Team Kirby</div>
+                <div class="player-role">Black</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="canvas-container">
+          <canvas id="game-canvas"></canvas>
+        </div>
+        <div id="move-history" class="move-history">
+          <h4>Move History</h4>
+          <div id="move-list" class="move-list"></div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

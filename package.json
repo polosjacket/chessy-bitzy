@@ -1,0 +1,24 @@
+{
+  "name": "chessy-bitzy",
+  "version": "0.1.0",
+  "description": "A Nintendo-inspired 3D chess game built with Node.js, Three.js, and Socket.io.",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"vite\"",
+    "server": "node server/index.js",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "chess.js": "^1.3.0",
+    "express": "^4.18.3",
+    "socket.io": "^4.7.5",
+    "three": "^0.165.0",
+    "gsap": "^3.12.5"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "socket.io-client": "^4.7.5",
+    "vite": "^5.2.0"
+  }
+}
