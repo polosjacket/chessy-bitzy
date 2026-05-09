@@ -31,7 +31,7 @@ export class InputHandler {
     if (!this._enabled) return;
     const { x, y } = this._getCoords(e);
     this.raycaster.setFromCamera({ x, y }, this.camera);
-    const hits = this.raycaster.intersectObjects(this.board3D.getSquareMeshes());
+    const hits = this.raycaster.intersectObjects(this.board3D.getInteractiveMeshes());
     if (hits.length > 0) {
       const square = this.board3D.getSquareFromMesh(hits[0].object);
       if (square) this.onSquareClick(square);
@@ -39,7 +39,16 @@ export class InputHandler {
   }
 
   _onMove(e) {
-    // Could be used for hover effects later
+    if (!this._enabled) return;
+    const { x, y } = this._getCoords(e);
+    this.raycaster.setFromCamera({ x, y }, this.camera);
+    const hits = this.raycaster.intersectObjects(this.board3D.getInteractiveMeshes());
+    if (hits.length > 0) {
+      const square = this.board3D.getSquareFromMesh(hits[0].object);
+      this.board3D.setHover(square);
+    } else {
+      this.board3D.setHover(null);
+    }
   }
 
   enable()  { this._enabled = true;  }

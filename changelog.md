@@ -68,3 +68,55 @@ All notable changes and commands executed during the development of **Chessy Bit
 
 ---
 *Status: ✅ Phases 1–6 Complete | 🔲 Phases 7–10 Planned*
+
+---
+
+## [2026-05-09] - Bug Fixes: Click Interaction & Audio
+
+### 🐛 Bugs Fixed
+
+#### Bug 1: Chess pieces could not be clicked or moved
+- **Root Cause:** The 3D board coordinate system was inverted. chess.js `board[0]` = rank 8, but the square meshes placed at `row=0` were named `a1–h1` (rank 1) and positioned at `z=-3.5` (the far/black side). Pieces from chess.js rank 8 were also placed at `z=-3.5`, so visually they appeared on rank 1 squares but were registered by the engine as rank 8 squares. Clicking a white pawn (near camera) returned a square like `e8` → engine rejected selection.
+- **Fix in `src/render/Board3D.js`:**
+  - Squares now placed at `z=(7-row)-3.5` so rank 1 (white's side) is at `z=+3.5` (near camera).
+  - Piece sprites now placed at `z=rankIdx-3.5` with correct square name `FILE+(8-rankIdx)`.
+
+#### Bug 2: Music did not auto-play when the game started
+- **Root Cause:** Browser autoplay policy blocks `AudioContext` creation until a user gesture. The `AudioManager` was calling `playBackground()` before any interaction, with no queue mechanism.
+- **Fix in `src/audio/AudioManager.js`:** Added `_pendingTheme` queue. When `playBackground()` is called before a click, it stores the theme. On first user click/keypress, `_initOnInteraction()` creates the AudioContext and immediately plays the queued theme.
+
+#### Enhancement: Slower, more ambient music
+- Reduced BPM: **72 BPM** (menu), **65 BPM** (game) — down from 140/120.
+- Changed waveforms: **triangle** melody + **sine** bass/pad (replaces square/sawtooth).
+- Added slow ADSR envelopes (80ms attack, 120ms release) for a softer, more atmospheric sound.
+- Added a third "pad" layer with slow chord arpeggios for harmonic depth.
+- Character jingles also slowed slightly (0.13s per note).
+
+### 📁 Files Modified
+- `src/render/Board3D.js` — Coordinate system fixed for squares and pieces.
+- `src/audio/AudioManager.js` — Music queue, slower BPM, ambient waveforms.
+- `src/main.js` — Clarified boot comment; audio queuing now self-contained.
+
+### 🛠 Commands
+- `snyk_code_scan`: ✅ 0 security issues found.
+
+---
+
+## [2026-05-09] - Bug Fix 2: Hover Highlight & Direct Piece Clicking
+
+### 🐛 Bugs Fixed
+#### Bug: Still couldn't click pieces reliably
+- **Root Cause:** The raycaster in `InputHandler.js` was only intersecting against the `squareMeshes` (the board squares) on the `y=0` plane. The 2D emoji sprites hover at `y=0.7`. Clicking the top half of a tall sprite would cause the raycast to either miss the square underneath it completely or hit the square *behind* it due to the camera angle, resulting in selecting the wrong square or nothing.
+- **Fix:**
+  - In `Board3D.js`, assigned `userData.square` directly to the piece sprites.
+  - Added `getInteractiveMeshes()` to return both squares and sprites for the raycaster.
+  - In `InputHandler.js`, the raycaster now hits the sprites directly, retrieving the correct square name regardless of camera angle.
+
+#### Enhancement: Hover Highlight
+- Added a hover effect to give immediate feedback when pointing at a valid, clickable square/piece.
+- Implemented `_onMove` in `InputHandler.js` to trigger `setHover(square)` in `Board3D.js`.
+- The hovered square slightly brightens (emissive `0x222222`), and the piece sprite scales up (`1.0` vs default `0.85`), making it extremely clear which piece you are targeting before you click.
+
+### 📁 Files Modified
+- `src/render/Board3D.js` — Added `userData.square` to sprites, `setHover()`, `_clearHover()`, and `getInteractiveMeshes()`.
+- `src/render/InputHandler.js` — Changed raycast target to interactive meshes and added `_onMove` hover logic.

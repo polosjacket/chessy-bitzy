@@ -279,5 +279,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ─── Boot ─────────────────────────────────────────────────
+// Queue the menu music; it will auto-start on the first user
+// click or keypress (required by browser autoplay policy).
 initTooltips();
-audio.playBackground('menu');
+audio.playBackground('menu'); // queued — fires on first interaction

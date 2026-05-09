@@ -52,8 +52,9 @@ export class Board3D {
         const mesh = new THREE.Mesh(geo, mat);
         mesh.receiveShadow = true;
 
-        // Position: center at (0,0), a1 = bottom-left
-        mesh.position.set(col - 3.5, 0, row - 3.5);
+        // rank 1 (row=0) → z=+3.5 (near camera / white's side)
+        // rank 8 (row=7) → z=-3.5 (far  camera / black's side)
+        mesh.position.set(col - 3.5, 0, (7 - row) - 3.5);
         mesh.userData.square = `${FILE_LETTERS[col]}${row + 1}`;
         mesh.userData.baseColor = isLight ? COLOR_LIGHT_SQUARE : COLOR_DARK_SQUARE;
 
@@ -101,9 +102,14 @@ export class Board3D {
     const blackFaction = Object.values(FACTIONS).find(f => f !== whiteFaction);
 
     board.forEach((rowData, rankIdx) => {
+      // chess.js board[0] = rank 8, board[7] = rank 1
+      // Map to the same z-convention as the squares:
+      // rank 8 (rankIdx=0) → z=-3.5 (far), rank 1 (rankIdx=7) → z=+3.5 (near)
+      const chessRank = 8 - rankIdx;           // 8 down to 1
+      const zPos      = (rankIdx) - 3.5;       // 0-3.5 → -3.5, 7-3.5 → +3.5
       rowData.forEach((piece, fileIdx) => {
         if (!piece) return;
-        const square = `${FILE_LETTERS[fileIdx]}${rankIdx + 1}`;
+        const square = `${FILE_LETTERS[fileIdx]}${chessRank}`;
         const isWhite = piece.color === 'w';
         const faction = isWhite ? whiteFaction : blackFaction;
         const pieceKey = isWhite ? piece.type.toUpperCase() : piece.type;
@@ -111,7 +117,8 @@ export class Board3D {
         const emoji = charData?.emoji || '♟';
 
         const sprite = this._createPieceSprite(emoji, isWhite);
-        sprite.position.set(fileIdx - 3.5, 0.7, rankIdx - 3.5);
+        sprite.position.set(fileIdx - 3.5, 0.7, zPos);
+        sprite.userData.square = square;
         this.pieceMeshes[square] = sprite;
         this._group.add(sprite);
       });
@@ -147,8 +154,41 @@ export class Board3D {
     return mesh?.userData?.square || null;
   }
 
-  /** Get all square meshes for raycasting */
-  getSquareMeshes() {
-    return Object.values(this.squareMeshes);
+  /** Get all interactive meshes (squares and pieces) for raycasting */
+  getInteractiveMeshes() {
+    return this._group.children;
+  }
+
+  /** Highlight a square and its piece on hover */
+  setHover(square) {
+    if (this.hoveredSquare === square) return;
+    
+    if (this.hoveredSquare) {
+      this._clearHover(this.hoveredSquare);
+    }
+    
+    this.hoveredSquare = square;
+    
+    if (square) {
+      const mesh = this.squareMeshes[square];
+      if (mesh && !this.highlightedSquares.includes(square)) {
+        mesh.material.emissive.setHex(0x222222);
+      }
+      const sprite = this.pieceMeshes[square];
+      if (sprite) {
+        sprite.scale.set(1.0, 1.0, 1.0);
+      }
+    }
+  }
+
+  _clearHover(square) {
+    const mesh = this.squareMeshes[square];
+    if (mesh) {
+      mesh.material.emissive.setHex(0x000000);
+    }
+    const sprite = this.pieceMeshes[square];
+    if (sprite) {
+      sprite.scale.set(0.85, 0.85, 0.85);
+    }
   }
 }
