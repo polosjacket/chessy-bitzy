@@ -156,7 +156,37 @@ export class Board3D {
 
   /** Get all interactive meshes (squares and pieces) for raycasting */
   getInteractiveMeshes() {
-    return this._group.children;
+    return this._group.children.filter(c => c !== this.pickedSprite);
+  }
+
+  /** Pick a piece up from the board */
+  pickPiece(square) {
+    this.pickedSprite = this.pieceMeshes[square];
+    this.pickedSquareOrigin = square;
+    if (this.pickedSprite) {
+      this.pickedSprite.scale.set(1.2, 1.2, 1.2);
+    }
+  }
+
+  /** Snap piece back to its original square if selection is canceled */
+  cancelPick() {
+    if (!this.pickedSprite || !this.pickedSquareOrigin) return;
+    const fileIdx = this.pickedSquareOrigin.charCodeAt(0) - 'a'.charCodeAt(0);
+    const chessRank = parseInt(this.pickedSquareOrigin[1]);
+    const rankIdx = 8 - chessRank; 
+    const zPos = rankIdx - 3.5;
+    
+    this.pickedSprite.position.set(fileIdx - 3.5, 0.7, zPos);
+    this.pickedSprite.scale.set(0.85, 0.85, 0.85);
+    
+    this.pickedSprite = null;
+    this.pickedSquareOrigin = null;
+  }
+
+  /** Drop the piece when successfully moved */
+  dropPiece() {
+    this.pickedSprite = null;
+    this.pickedSquareOrigin = null;
   }
 
   /** Highlight a square and its piece on hover */

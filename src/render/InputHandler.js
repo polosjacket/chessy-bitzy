@@ -42,6 +42,22 @@ export class InputHandler {
     if (!this._enabled) return;
     const { x, y } = this._getCoords(e);
     this.raycaster.setFromCamera({ x, y }, this.camera);
+
+    // If holding a piece, update its position to follow the mouse
+    if (this.board3D.pickedSprite) {
+      const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(
+        new THREE.Vector3(0, 1, 0),
+        new THREE.Vector3(0, 1.0, 0) // slightly elevated while carried
+      );
+      const intersectPoint = new THREE.Vector3();
+      this.raycaster.ray.intersectPlane(plane, intersectPoint);
+      if (intersectPoint) {
+        this.board3D.pickedSprite.position.x = intersectPoint.x;
+        this.board3D.pickedSprite.position.z = intersectPoint.z;
+        this.board3D.pickedSprite.position.y = 1.0;
+      }
+    }
+
     const hits = this.raycaster.intersectObjects(this.board3D.getInteractiveMeshes());
     if (hits.length > 0) {
       const square = this.board3D.getSquareFromMesh(hits[0].object);

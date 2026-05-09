@@ -120,3 +120,26 @@ All notable changes and commands executed during the development of **Chessy Bit
 ### 📁 Files Modified
 - `src/render/Board3D.js` — Added `userData.square` to sprites, `setHover()`, `_clearHover()`, and `getInteractiveMeshes()`.
 - `src/render/InputHandler.js` — Changed raycast target to interactive meshes and added `_onMove` hover logic.
+
+---
+
+## [2026-05-09] - Bug Fix 3: Index Mapping & Drag-and-Drop Gameplay
+
+### 🐛 Bugs Fixed
+#### Bug: The "Unclickable Piece" bug was still occurring
+- **Root Cause:** The `state.board` array from `chess.js` uses a reversed index format where `board[0]` represents Rank 8. `main.js` was doing `rank = parseInt(square[1]) - 1`. If the user clicked `a1` (a White piece), it would look up `board[0][0]`, which is `a8` (a Black piece). Because it thought the player clicked an enemy piece, it rejected the click.
+- **Fix in `src/main.js`:** Corrected the rank lookup formula to `rank = 8 - parseInt(square[1])`. The engine now correctly identifies the piece you clicked on.
+
+### ✨ New Feature: "Pick and Place" Gameplay
+Overhauled the movement system to a satisfying drag-and-drop style:
+- **Click to Pick:** Clicking a piece "picks it up", scaling it to `1.2x` and elevating it to `y=1.0`. The game highlights all valid destination squares.
+- **Mouse Tracking:** The picked piece follows the mouse cursor smoothly in 3D space using a flat `THREE.Plane` raycast intersection.
+- **Click to Place:** Clicking a valid square drops the piece onto the new square. Clicking an invalid square or the original square snaps the piece back to its original location (`cancelPick`).
+
+### 📁 Files Modified
+- `src/main.js` — Fixed coordinate array inversion bug; integrated `pickPiece`, `cancelPick`, and `dropPiece` logic.
+- `src/render/Board3D.js` — Added piece tracking states (`pickedSprite`, `pickedSquareOrigin`), and disabled raycast interference for the currently held piece.
+- `src/render/InputHandler.js` — Added mathematical Plane intersection to translate mouse coordinates directly to 3D space for the picked piece.
+
+### 🛠 Commands
+- `snyk_code_scan`: ✅ 0 security issues found.

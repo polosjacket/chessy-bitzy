@@ -203,7 +203,7 @@ function onSquareClick(square) {
 
   if (!selectedSquare) {
     const file  = square.charCodeAt(0) - 'a'.charCodeAt(0);
-    const rank  = parseInt(square[1]) - 1;
+    const rank  = 8 - parseInt(square[1]); // Fix chess.js rank array inversion
     const piece = state.board[rank]?.[file];
 
     const isPlayerTurn = (state.turn === 'w' && piece?.color === 'w') ||
@@ -216,6 +216,8 @@ function onSquareClick(square) {
       : piece.type.toLowerCase();
     audio.playCharacterSound(pieceCode);
 
+    board3D.pickPiece(square);
+
     selectedSquare = square;
     const validMoves = engine.getValidMoves(square).map(m => m.to);
     board3D.clearHighlights();
@@ -224,6 +226,7 @@ function onSquareClick(square) {
   } else {
     if (square === selectedSquare) {
       selectedSquare = null;
+      board3D.cancelPick();
       board3D.clearHighlights();
       return;
     }
@@ -231,22 +234,29 @@ function onSquareClick(square) {
     if (!moved) {
       const state2 = engine.getState();
       const file   = square.charCodeAt(0) - 'a'.charCodeAt(0);
-      const rank   = parseInt(square[1]) - 1;
+      const rank   = 8 - parseInt(square[1]);
       const piece  = state2.board[rank]?.[file];
       if (piece && piece.color === state2.turn) {
         const pieceCode = piece.color === 'w'
           ? piece.type.toUpperCase()
           : piece.type.toLowerCase();
         audio.playCharacterSound(pieceCode);
+        
+        board3D.cancelPick();
+        board3D.pickPiece(square);
+        
         selectedSquare = square;
         const validMoves = engine.getValidMoves(square).map(m => m.to);
         board3D.clearHighlights();
         board3D.highlightSquares([square], 'selected');
         board3D.highlightSquares(validMoves, 'valid');
       } else {
+        board3D.cancelPick();
         selectedSquare = null;
         board3D.clearHighlights();
       }
+    } else {
+      board3D.dropPiece();
     }
   }
 }
@@ -260,6 +270,7 @@ document.getElementById('btn-undo').addEventListener('click', () => {
   if (engine) {
     engine.undoMove();
     selectedSquare = null;
+    board3D?.cancelPick();
     board3D?.clearHighlights();
     audio.playMove();
   }
