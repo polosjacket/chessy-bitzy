@@ -159,7 +159,10 @@ export class Board3D {
     return this._group.children.filter(c => c !== this.pickedSprite);
   }
 
-  /** Pick a piece up from the board */
+  /** 
+   * Pick a piece up from the board. 
+   * Scales it up and prepares it for mouse tracking.
+   */
   pickPiece(square) {
     this.pickedSprite = this.pieceMeshes[square];
     this.pickedSquareOrigin = square;
@@ -168,7 +171,10 @@ export class Board3D {
     }
   }
 
-  /** Snap piece back to its original square if selection is canceled */
+  /** 
+   * Snap piece back to its original square if selection is canceled.
+   * Resets position and scale.
+   */
   cancelPick() {
     if (!this.pickedSprite || !this.pickedSquareOrigin) return;
     const fileIdx = this.pickedSquareOrigin.charCodeAt(0) - 'a'.charCodeAt(0);
@@ -183,7 +189,10 @@ export class Board3D {
     this.pickedSquareOrigin = null;
   }
 
-  /** Drop the piece when successfully moved */
+  /** 
+   * Drop the piece when successfully moved.
+   * Clears the picked state; boardUpdate will handle final positioning.
+   */
   dropPiece() {
     this.pickedSprite = null;
     this.pickedSquareOrigin = null;

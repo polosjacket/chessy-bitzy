@@ -31,11 +31,13 @@ This repository contains the client and server for a small multiplayer 3D chess 
 
 ## Features
 
-- 3D-rendered chessboard and pieces using Three.js
-- Chess rules and move validation using chess.js
-- Real-time multiplayer using Socket.io (server + client)
-- Smooth piece animations using GSAP
-- Lightweight Node/Express server for multiplayer signalling
+- **Satisfying 3D Gameplay:** Click to pick up pieces, drag them through the air, and drop them to move.
+- **3D Piece Identification:** Hover over any character to see their name and chess role.
+- **Nintendo-Inspired Factions:** Play as Team Mario or Team Kirby with unique character mappings.
+- **Procedural 8-bit Audio:** Synthesized chiptune music and SFX generated in real-time (no external files).
+- **Responsive 3D Rendering:** High-performance Three.js board with smooth GSAP animations.
+- **Real-time Multiplayer:** Socket.io room system for online matches.
+- **Local Modes:** Solo practice against AI or local 2-player mode.
 
 
 ## Tech stack

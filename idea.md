@@ -70,12 +70,13 @@ Each team features a unique set of characters. Players can choose their "Faction
 2.  **Phase 2:** ✅ 3D board rendering with Three.js, lighting, and camera.
 3.  **Phase 3:** ✅ Emoji piece sprites, character mapping, and move highlighting.
 4.  **Phase 4:** ✅ Procedural 8-bit audio, character sounds, faction jingles, and game SFX.
-5.  **Phase 5:** ✅ Tooltip system for all menu icons and characters.
+5.  **Phase 5:** ✅ Tooltip system (UI and 3D Pieces).
 6.  **Phase 6:** ✅ Documentation (SOURCE_CODE.md, HOWTO.md) and .gitignore.
-7.  **Phase 7:** 🔲 Minimax AI upgrade for a smarter computer opponent.
-8.  **Phase 8:** 🔲 Full online multiplayer with Socket.io rooms.
-9.  **Phase 9:** 🔲 3D GLTF character models replacing emoji sprites.
-10. **Phase 10:** 🔲 Themed arenas (Mushroom Kingdom, Dream Land, Bowser's Castle).
+7.  **Phase 7:** ✅ Pick & Place mechanics (Drag-and-drop gameplay).
+8.  **Phase 8:** 🔲 Minimax AI upgrade for a smarter computer opponent.
+9.  **Phase 9:** 🔲 Full online multiplayer with Socket.io rooms.
+10. **Phase 10:** 🔲 3D GLTF character models replacing emoji sprites.
+11. **Phase 11:** 🔲 Themed arenas (Mushroom Kingdom, Dream Land, Bowser's Castle).
 
 ---
 *Created with ❤️ by Antigravity*

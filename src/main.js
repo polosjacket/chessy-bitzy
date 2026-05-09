@@ -47,11 +47,38 @@ function initTooltips() {
     clearTimeout(hideTimer);
     tip.innerHTML = target.dataset.tooltip;
     tip.classList.add('visible');
+    
+    // Force immediate layout reflow so offsetWidth/Height are updated
+    // before the next mousemove or before the browser paints.
+    void tip.offsetHeight;
   });
 
   document.addEventListener('mousemove', (e) => {
-    tip.style.left = `${e.clientX + 14}px`;
-    tip.style.top  = `${e.clientY - 10}px`;
+    if (!tip.classList.contains('visible')) return;
+
+    const tipRect = tip.getBoundingClientRect();
+    const tipWidth = tipRect.width || tip.offsetWidth || 200;
+    const tipHeight = tipRect.height || tip.offsetHeight || 100;
+    
+    let x = e.clientX + 20;
+    let y = e.clientY + 20;
+    
+    // Flip horizontal if hitting right edge
+    if (x + tipWidth > window.innerWidth - 20) {
+      x = e.clientX - tipWidth - 20;
+    }
+    
+    // Flip vertical if hitting bottom edge
+    if (y + tipHeight > window.innerHeight - 20) {
+      y = e.clientY - tipHeight - 20;
+    }
+    
+    // Final safety bounds to keep tooltip fully on screen
+    x = Math.max(10, Math.min(x, window.innerWidth - tipWidth - 10));
+    y = Math.max(10, Math.min(y, window.innerHeight - tipHeight - 10));
+
+    tip.style.left = `${x}px`;
+    tip.style.top  = `${y}px`;
   });
 
   document.addEventListener('mouseout', (e) => {
@@ -136,7 +163,8 @@ function startGame() {
       sceneManager.camera,
       sceneManager.renderer,
       board3D,
-      onSquareClick
+      onSquareClick,
+      onSquareHover
     );
   }
 
@@ -194,7 +222,6 @@ function _setPiecesTooltips(whiteFaction, blackFaction) {
     `<strong>${blackFaction.emoji} ${blackFaction.name}</strong><br><br>${buildPieceTip(blackFaction)}`);
 }
 
-// ─── Square Interaction ───────────────────────────────────
 function onSquareClick(square) {
   if (!engine) return;
   const state = engine.getState();
@@ -256,8 +283,56 @@ function onSquareClick(square) {
         board3D.clearHighlights();
       }
     } else {
+      // Valid move!
       board3D.dropPiece();
     }
+  }
+}
+
+/** 
+ * Handles square/piece hover in the 3D scene.
+ * Updates the global DOM tooltip with character and chess role information.
+ */
+function onSquareHover(square, e) {
+  const tip = document.getElementById('global-tooltip');
+  if (!tip || !engine) return;
+
+  if (!square) {
+    // Only hide if the mouse isn't over a DOM element with a tooltip
+    const overDomTip = e.target.closest('[data-tooltip]');
+    if (!overDomTip) tip.classList.remove('visible');
+    return;
+  }
+
+  const state = engine.getState();
+  const file  = square.charCodeAt(0) - 'a'.charCodeAt(0);
+  const rank  = 8 - parseInt(square[1]);
+  const piece = state.board[rank]?.[file];
+
+  if (piece) {
+    const whiteFaction = FACTIONS[chosenFaction];
+    const blackFaction = Object.values(FACTIONS).find(f => f !== whiteFaction);
+    const faction = piece.color === 'w' ? whiteFaction : blackFaction;
+    
+    // Get Nintendo character data from our config
+    const pieceKey = piece.color === 'w' ? piece.type.toUpperCase() : piece.type.toLowerCase();
+    const charData = faction.pieces[pieceKey];
+
+    if (charData) {
+      const typeMap = { p:'Pawn', n:'Knight', b:'Bishop', r:'Rook', q:'Queen', k:'King' };
+      const roleName = typeMap[piece.type.toLowerCase()];
+      
+      // Update glassmorphic tooltip content
+      tip.innerHTML = `
+        <strong>${charData.emoji} ${charData.name}</strong> (${roleName})<br>
+        <small style="opacity: 0.8">${charData.description}</small>
+      `;
+      tip.classList.add('visible');
+    }
+  } else {
+    // Clear tooltip if hovering an empty square
+    const overDomTip = e.target.closest('[data-tooltip]');
+    if (!overDomTip) tip.classList.remove('visible');
   }
 }
 
@@ -281,11 +356,20 @@ document.getElementById('btn-menu').addEventListener('click', () => {
   board3D?.clearHighlights();
 });
 
-// ─── Volume Toggle (keyboard shortcut) ───────────────────
+// ─── Volume & Interaction (keyboard shortcuts) ───────────
 document.addEventListener('keydown', (e) => {
   if (e.key === 'm' || e.key === 'M') {
     const muted = audio.toggleMute();
     console.log(`🔊 Audio ${muted ? 'muted' : 'unmuted'}`);
+  }
+  
+  if (e.key === 'Escape') {
+    if (selectedSquare) {
+      board3D?.cancelPick();
+      board3D?.clearHighlights();
+      selectedSquare = null;
+      audio.playMove(); // Play a small click to confirm cancel
+    }
   }
 });
 

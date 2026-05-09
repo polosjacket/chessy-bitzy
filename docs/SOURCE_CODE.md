@@ -218,11 +218,13 @@ Sets up:
 
 | Method | Parameters | Description |
 |--------|-----------|-------------|
-| `updatePieces(board, playerFaction)` | `board: Square[][]`, `faction: string` | Removes all old sprites, creates new ones from current board state. |
-| `highlightSquares(squares, type)` | `squares: string[]`, `type: 'selected'\|'valid'\|'lastmove'\|'check'` | Tints square meshes with a highlight color. |
-| `clearHighlights()` | — | Restores all highlighted squares to their base color. |
-| `getSquareMeshes()` | — | Returns array of all 64 square `THREE.Mesh` objects (used for raycasting). |
-| `getSquareFromMesh(mesh)` | `mesh: THREE.Mesh` | Extracts the algebraic square name from mesh userData. |
+| `updatePieces(board, faction)` | `Square[][]`, `string` | Recreates all 3D piece sprites based on the current FEN. |
+| `pickPiece(square)` | `string` | Elevates and scales the piece sprite for drag-and-drop. |
+| `cancelPick()` | — | Snaps the currently held piece back to its original square. |
+| `dropPiece()` | — | Finalizes the "drop" state after a successful move. |
+| `highlightSquares(squares, type)` | `string[]`, `string` | Tints squares (selected, valid, lastmove, check). |
+| `setHover(square)` | `string\|null` | Highlights the square/piece currently under the cursor. |
+| `getInteractiveMeshes()` | — | Returns squares and pieces, excluding any currently picked piece. |
 
 **Highlight colors:**
 | Type | Color |

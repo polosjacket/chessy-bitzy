@@ -6,19 +6,21 @@
 import * as THREE from 'three';
 
 export class InputHandler {
-  constructor(camera, renderer, board3D, onSquareClick) {
-    this.camera      = camera;
-    this.renderer    = renderer;
-    this.board3D     = board3D;
+  constructor(camera, renderer, board3D, onSquareClick, onSquareHover) {
+    this.camera        = camera;
+    this.renderer      = renderer;
+    this.board3D       = board3D;
     this.onSquareClick = onSquareClick;
-    this.raycaster   = new THREE.Raycaster();
-    this.mouse       = new THREE.Vector2();
-    this._enabled    = true;
+    this.onSquareHover = onSquareHover;
+    this.raycaster     = new THREE.Raycaster();
+    this.mouse         = new THREE.Vector2();
+    this._enabled      = true;
 
     renderer.domElement.addEventListener('click', this._onClick.bind(this));
     renderer.domElement.addEventListener('mousemove', this._onMove.bind(this));
   }
 
+  /** Convert screen mouse coordinates to Normalized Device Coordinates (NDC) [-1, 1] */
   _getCoords(e) {
     const rect = this.renderer.domElement.getBoundingClientRect();
     return {
@@ -38,16 +40,22 @@ export class InputHandler {
     }
   }
 
+  /**
+   * Handles mouse movement.
+   * 1. Updates picked piece position to follow mouse via plane intersection.
+   * 2. Updates board hover highlights.
+   * 3. Triggers 3D piece tooltips.
+   */
   _onMove(e) {
     if (!this._enabled) return;
     const { x, y } = this._getCoords(e);
     this.raycaster.setFromCamera({ x, y }, this.camera);
 
-    // If holding a piece, update its position to follow the mouse
+    // If holding a piece, update its 3D position using a mathematical plane
     if (this.board3D.pickedSprite) {
       const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(
         new THREE.Vector3(0, 1, 0),
-        new THREE.Vector3(0, 1.0, 0) // slightly elevated while carried
+        new THREE.Vector3(0, 1.0, 0) // Track at a slightly elevated height
       );
       const intersectPoint = new THREE.Vector3();
       this.raycaster.ray.intersectPlane(plane, intersectPoint);
@@ -62,8 +70,10 @@ export class InputHandler {
     if (hits.length > 0) {
       const square = this.board3D.getSquareFromMesh(hits[0].object);
       this.board3D.setHover(square);
+      if (this.onSquareHover) this.onSquareHover(square, e);
     } else {
       this.board3D.setHover(null);
+      if (this.onSquareHover) this.onSquareHover(null, e);
     }
   }
 

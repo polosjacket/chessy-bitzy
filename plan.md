@@ -45,6 +45,11 @@ This document is the **living technical roadmap** for Chessy Bitzy. It is always
     - Canvas-based emoji sprites with faction glow (orange/purple radial gradient).
     - `THREE.CanvasTexture` + `THREE.SpriteMaterial` (depthTest: false).
     - Sprites updated on every `boardUpdate` event.
+- [x] **3.3 Pick & Place Mechanics:**
+    - Piece "picking" on click with 1.2x scale up and elevation to y=1.0.
+    - Real-time mouse tracking via 3D plane intersection.
+    - Snap-back on invalid moves or cancellation.
+    - Fixed chess.js rank array inversion (board[0] is rank 8).
 
 ---
 
@@ -93,6 +98,10 @@ This document is the **living technical roadmap** for Chessy Bitzy. It is always
     - Flip (🔄), Undo (↩), Menu (🏠) buttons all have informative tooltips.
 - [x] **5.5 Player Panel Tooltips:**
     - Hovering the white/black player panels shows the full character roster.
+- [x] **5.6 3D Piece Tooltips:**
+    - 3D raycast hover detection on board squares and pieces.
+    - Dynamic identification of characters and chess roles (e.g., "Meta Knight (Knight)").
+    - Metadata display including character emoji, name, and role description.
 
 ---
 

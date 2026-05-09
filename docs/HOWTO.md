@@ -72,12 +72,14 @@ You can pick between two factions. Each has a unique set of Nintendo-inspired ch
 
 ---
 
-### A5. Making a Move
+### A5. Making a Move (Pick & Place)
 
-1. **Click any piece** of your color to select it. Its valid moves will light up in **purple**.
-2. **Click a highlighted square** to move there.
-3. Click the same piece again to **deselect**.
-4. Click a different friendly piece to **switch selection**.
+Chessy Bitzy uses a physical "Pick & Place" system:
+1. **Click any piece** of your color to "pick it up". It will scale up and float above the board.
+2. **Drag it:** As you move your mouse, the piece will follow you through the 3D space. Valid destination squares will light up in **purple**.
+3. **Identify:** Hover over any piece (yours or your opponent's) to see a tooltip with the character's name and their chess role.
+4. **Drop it:** Click on a valid purple square to place the piece and finish your turn.
+5. **Cancel:** Click an invalid square or click the original square to snap the piece back and cancel the move.
 
 > Each time you select a piece, you'll hear that character's **signature 8-bit sound**!
 
@@ -330,7 +332,7 @@ The Socket.io server is already built! To enable it in the frontend:
 | Key | Action |
 |-----|--------|
 | `M` | Toggle audio mute |
-| `Esc` | (Planned) Deselect current piece |
+| `Esc` | Cancel piece selection / Snap piece back |
 | Mouse Scroll | Zoom camera in/out |
 | Click + Drag | Rotate camera |
 
